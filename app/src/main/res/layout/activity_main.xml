@@ -2,41 +2,252 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#07070e">
+    android:background="@color/gx_bg"
+    android:fillViewport="true">
+
   <LinearLayout
       android:orientation="vertical"
       android:padding="16dp"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
-    <TextView android:text="GX.TXT.U" android:textColor="#ffd700"
-        android:textSize="26sp" android:textStyle="bold"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <TextView android:text="Virtual Camera Studio" android:textColor="#666666"
-        android:textSize="12sp" android:layout_marginBottom="16dp"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+    <!-- ═══ HEADER ═══ -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content">
+        <TextView
+            android:text="GX.TXT.U"
+            android:textColor="@color/gx_purple"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Virtual Camera Platform · v1.0"
+            android:textColor="@color/gx_muted"
+            android:textSize="11sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+      </LinearLayout>
+
+      <TextView
+          android:id="@+id/statusPill"
+          android:text="STANDBY"
+          android:textColor="@color/gx_muted"
+          android:textSize="10sp"
+          android:textStyle="bold"
+          android:letterSpacing="0.1"
+          android:paddingLeft="14dp"
+          android:paddingRight="14dp"
+          android:paddingTop="6dp"
+          android:paddingBottom="6dp"
+          android:background="@drawable/pill_off"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- ═══ MASTER ═══ -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content">
+        <TextView
+            android:text="ARM INJECTION"
+            android:textColor="@color/gx_text"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.08"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/masterSub"
+            android:text="Inactive"
+            android:textColor="@color/gx_muted"
+            android:textSize="11sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+      </LinearLayout>
+      <Switch
+          android:id="@+id/masterSwitch"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- ═══ STUDIO / SLOTS ═══ -->
+    <TextView
+        android:text="STUDIO"
+        android:textColor="@color/gx_purple"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.18"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <LinearLayout android:id="@+id/slot1" android:orientation="vertical"
+          android:gravity="center" android:padding="8dp"
+          android:layout_weight="1" android:layout_marginEnd="6dp"
+          android:background="@drawable/card"
+          android:layout_width="0dp" android:layout_height="wrap_content">
+        <ImageView android:id="@+id/slot1img"
+            android:layout_width="match_parent" android:layout_height="64dp"
+            android:scaleType="centerCrop"
+            android:background="@color/gx_card2"/>
+        <TextView android:id="@+id/slot1name" android:text="SLOT 1"
+            android:textColor="@color/gx_muted" android:textSize="10sp"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+      </LinearLayout>
+
+      <LinearLayout android:id="@+id/slot2" android:orientation="vertical"
+          android:gravity="center" android:padding="8dp"
+          android:layout_weight="1" android:layout_marginEnd="6dp"
+          android:background="@drawable/card"
+          android:layout_width="0dp" android:layout_height="wrap_content">
+        <ImageView android:id="@+id/slot2img"
+            android:layout_width="match_parent" android:layout_height="64dp"
+            android:scaleType="centerCrop"
+            android:background="@color/gx_card2"/>
+        <TextView android:id="@+id/slot2name" android:text="SLOT 2"
+            android:textColor="@color/gx_muted" android:textSize="10sp"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+      </LinearLayout>
+
+      <LinearLayout android:id="@+id/slot3" android:orientation="vertical"
+          android:gravity="center" android:padding="8dp"
+          android:layout_weight="1"
+          android:background="@drawable/card"
+          android:layout_width="0dp" android:layout_height="wrap_content">
+        <ImageView android:id="@+id/slot3img"
+            android:layout_width="match_parent" android:layout_height="64dp"
+            android:scaleType="centerCrop"
+            android:background="@color/gx_card2"/>
+        <TextView android:id="@+id/slot3name" android:text="SLOT 3"
+            android:textColor="@color/gx_muted" android:textSize="10sp"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+      </LinearLayout>
+    </LinearLayout>
+
+    <!-- ═══ SOURCE ═══ -->
+    <TextView
+        android:text="SOURCE"
+        android:textColor="@color/gx_purple"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.18"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout android:orientation="horizontal"
         android:layout_width="match_parent" android:layout_height="wrap_content">
-      <Button android:id="@+id/slot1" android:text="SLOT 1" android:layout_weight="1"
-          android:layout_width="0dp" android:layout_height="wrap_content"/>
-      <Button android:id="@+id/slot2" android:text="SLOT 2" android:layout_weight="1"
-          android:layout_width="0dp" android:layout_height="wrap_content"/>
-      <Button android:id="@+id/slot3" android:text="SLOT 3" android:layout_weight="1"
-          android:layout_width="0dp" android:layout_height="wrap_content"/>
+      <Button android:id="@+id/pickVideo" android:text="PICK VIDEO"
+          android:textColor="@color/gx_text" android:textAllCaps="false"
+          android:stateListAnimator="@null"
+          android:background="@drawable/btn_ghost"
+          android:layout_weight="1" android:layout_marginEnd="6dp"
+          android:layout_width="0dp" android:layout_height="48dp"/>
+      <Button android:id="@+id/pickImage" android:text="PICK IMAGE"
+          android:textColor="@color/gx_text" android:textAllCaps="false"
+          android:stateListAnimator="@null"
+          android:background="@drawable/btn_ghost"
+          android:layout_weight="1"
+          android:layout_width="0dp" android:layout_height="48dp"/>
     </LinearLayout>
-    <Button android:id="@+id/pickVideo" android:text="PICK VIDEO"
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/pickImage" android:text="PICK IMAGE"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/startBtn" android:text="START"
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/overlayBtn" android:text="Overlay ON"
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <TextView android:id="@+id/status" android:text="Ready"
-        android:textColor="#ffd700" android:textSize="13sp"
+
+    <!-- ═══ CONTROL ═══ -->
+    <TextView
+        android:text="CONTROL"
+        android:textColor="@color/gx_purple"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.18"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button android:id="@+id/startBtn" android:text="START INJECTION"
+        android:textColor="#FFFFFF" android:textAllCaps="false"
+        android:textStyle="bold" android:letterSpacing="0.06"
+        android:stateListAnimator="@null"
+        android:background="@drawable/btn_primary"
+        android:layout_width="match_parent" android:layout_height="54dp"/>
+
+    <LinearLayout android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent" android:layout_height="wrap_content">
+      <Button android:id="@+id/overlayBtn" android:text="OVERLAY"
+          android:textColor="@color/gx_text" android:textAllCaps="false"
+          android:stateListAnimator="@null"
+          android:background="@drawable/btn_ghost"
+          android:layout_weight="1" android:layout_marginEnd="6dp"
+          android:layout_width="0dp" android:layout_height="48dp"/>
+      <Button android:id="@+id/settingsBtn" android:text="SETTINGS"
+          android:textColor="@color/gx_text" android:textAllCaps="false"
+          android:stateListAnimator="@null"
+          android:background="@drawable/btn_ghost"
+          android:layout_weight="1"
+          android:layout_width="0dp" android:layout_height="48dp"/>
+    </LinearLayout>
+
+    <!-- ═══ TELEMETRY ═══ -->
+    <TextView
+        android:text="TELEMETRY"
+        android:textColor="@color/gx_purple"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.18"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView android:id="@+id/status"
+        android:text="System ready."
+        android:textColor="@color/gx_text"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:padding="14dp"
+        android:background="@drawable/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="GX · engineered for control"
+        android:textColor="@color/gx_muted"
+        android:textSize="10sp"
+        android:gravity="center"
         android:layout_marginTop="18dp"
-        android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
   </LinearLayout>
 </ScrollView>
