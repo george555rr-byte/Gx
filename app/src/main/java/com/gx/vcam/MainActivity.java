@@ -33,6 +33,14 @@ public class MainActivity extends Activity {
         super.onCreate(b);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= 30 && !android.os.Environment.isExternalStorageManager()) {
+            try {
+                Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                i.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(i);
+            } catch (Exception e) { }
+        }
+
         status = findViewById(R.id.status);
         statusPill = findViewById(R.id.statusPill);
         masterSub = findViewById(R.id.masterSub);
@@ -57,7 +65,7 @@ public class MainActivity extends Activity {
         findViewById(R.id.pickImage).setOnClickListener(v -> pick(false));
 
         masterSwitch.setOnCheckedChangeListener((v, checked) -> {
-            try { JSONObject c = GxConfig.read(); c.put("enabled", checked); GxConfig.write(c); } catch (Exception e) {}
+            try { JSONObject c = GxConfig.read(); c.put("enabled", checked); GxConfig.write(c); } catch (Exception e) { }
             refresh();
         });
 
@@ -71,7 +79,10 @@ public class MainActivity extends Activity {
         refresh();
     }
 
-    @Override protected void onResume() { super.onResume(); refresh(); }
+    @Override protected void onResume() {
+        super.onResume();
+        refresh();
+    }
 
     private void pick(boolean video) {
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -97,7 +108,7 @@ public class MainActivity extends Activity {
     }
 
     private void saveActive() {
-        try { JSONObject c = GxConfig.read(); c.put("slot", activeSlot); GxConfig.write(c); } catch (Exception e) {}
+        try { JSONObject c = GxConfig.read(); c.put("slot", activeSlot); GxConfig.write(c); } catch (Exception e) { }
     }
 
     private void toggleRun() {
@@ -108,7 +119,7 @@ public class MainActivity extends Activity {
             c.put("slot", activeSlot);
             GxConfig.write(c);
             status.setText(!en ? "Injection ARMED" : "Injection DISARMED");
-        } catch (Exception e) {}
+        } catch (Exception e) { }
         refresh();
     }
 
@@ -161,4 +172,4 @@ public class MainActivity extends Activity {
             return BitmapFactory.decodeFile(path, o);
         } catch (Exception e) { return null; }
     }
-    }
+}
