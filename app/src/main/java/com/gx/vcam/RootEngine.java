@@ -5,16 +5,11 @@ import java.util.Random;
 
 public class RootEngine {
 
-    // تشغيل الديمون (محرك الكاميرا)
     public static void start(Context ctx) {
         try {
-            // مسار المكتبات الأصلية داخل التطبيق
             String pkgPath = ctx.getApplicationInfo().nativeLibraryDir;
-            
-            // اسم الخدمة العشوائي
             String name = "gx_" + new Random().nextInt(10000);
 
-            // الأوامر اللي شفناها في التطبيق الصيني
             String cmd = 
                 "killall vcplax 2>/dev/null; " +
                 "cp " + pkgPath + "/libvc.so /data/libvc.so; " +
@@ -23,23 +18,22 @@ public class RootEngine {
                 "chmod 700 /data/vcplax; " +
                 "/data/vcplax " + name + " &";
 
-            // تنفيذ الأوامر بصلاحية الروت
             Process p = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd});
             p.waitFor();
-            
-            GxLog.w("ROOT", "Engine started successfully: " + name);
+            GxLog.w("ROOT", "SUCCESS: Engine started " + name);
             
         } catch (Throwable t) {
-            GxLog.w("ROOT", "Failed to start engine: " + t);
+            GxLog.w("ROOT", "ERROR: " + t.getMessage());
         }
     }
 
-    // إيقاف الديمون
     public static void stop() {
         try {
             Process p = Runtime.getRuntime().exec(new String[]{"su", "-c", "killall vcplax"});
             p.waitFor();
-            GxLog.w("ROOT", "Engine stopped");
-        } catch (Exception e) { }
+            GxLog.w("ROOT", "SUCCESS: Engine stopped");
+        } catch (Exception e) {
+            GxLog.w("ROOT", "ERROR: stop " + e.getMessage());
+        }
     }
 }
