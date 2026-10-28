@@ -1,57 +1,45 @@
 package com.gx.vcam;
 
 import android.content.Context;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.Random;
 
 public class RootEngine {
 
-    // تشغيل المحرك
+    // تشغيل الديمون (محرك الكاميرا)
     public static void start(Context ctx) {
         try {
-            // 1. مسار الملفات داخل التطبيق (jniLibs)
-            File filesDir = ctx.getFilesDir();
-            String arch = android.os.Build.SUPPORTED_ABIS[0].contains("64") ? "arm64-v8a" : "armeabi-v7a";
-            
-            // 2. نسخ المكتبات لـ /data/ (عن طريق الروت)
-            // ملاحظة: نحن نفترض أنك وضعت المكتبات في مجلد assets أو jniLibs
-            // هنا نستخدم مسار التطبيق المثبت
-            
+            // مسار المكتبات الأصلية داخل التطبيق
             String pkgPath = ctx.getApplicationInfo().nativeLibraryDir;
             
-            String name = "gx_" + new Random().nextInt(10000); // اسم عشوائي للخدمة
-            
-            String cmd = 
-                "su -c 'killall vcplax' \n" +
-                "su -c 'cp " + pkgPath + "/libvc.so /data/libvc.so' \n" +
-                "su -c 'cp " + pkgPath + "/libshadowhook.so /data/libvc++.so' \n" +
-                "su -c 'cp " + pkgPath + "/vcplax.so /data/vcplax' \n" +
-                "su -c 'chmod 700 /data/vcplax' \n" +
-                "su -c '/data/vcplax " + name + " &'";
+            // اسم الخدمة العشوائي
+            String name = "gx_" + new Random().nextInt(10000);
 
-            runRoot(cmd);
-            GxLog.w("ROOT", "Engine started with name: " + name);
+            // الأوامر اللي شفناها في التطبيق الصيني
+            String cmd = 
+                "killall vcplax 2>/dev/null; " +
+                "cp " + pkgPath + "/libvc.so /data/libvc.so; " +
+                "cp " + pkgPath + "/libshadowhook.so /data/libvc++.so; " +
+                "cp " + pkgPath + "/vcplax.so /data/vcplax; " +
+                "chmod 700 /data/vcplax; " +
+                "/data/vcplax " + name + " &";
+
+            // تنفيذ الأوامر بصلاحية الروت
+            Process p = Runtime.getRuntime().exec(new String[]{"su", "-c", cmd});
+            p.waitFor();
+            
+            GxLog.w("ROOT", "Engine started successfully: " + name);
             
         } catch (Throwable t) {
-            GxLog.w("ROOT", "start err: " + t);
+            GxLog.w("ROOT", "Failed to start engine: " + t);
         }
     }
 
-    // إيقاف المحرك
+    // إيقاف الديمون
     public static void stop() {
-        runRoot("su -c 'killall vcplax'");
-        GxLog.w("ROOT", "Engine stopped");
-    }
-
-    // دالة تنفيذ أوامر الروت
-    private static void runRoot(String cmd) {
         try {
-            Process p = Runtime.getRuntime().exec(new String[]{"sh", "-c", cmd});
+            Process p = Runtime.getRuntime().exec(new String[]{"su", "-c", "killall vcplax"});
             p.waitFor();
-        } catch (Exception e) {
-            GxLog.w("ROOT", "exec err: " + e);
-        }
+            GxLog.w("ROOT", "Engine stopped");
+        } catch (Exception e) { }
     }
 }
