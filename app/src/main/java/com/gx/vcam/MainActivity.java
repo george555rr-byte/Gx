@@ -17,6 +17,10 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 public class MainActivity extends Activity {
 
     private static final int REQ_VIDEO = 1;
@@ -33,6 +37,7 @@ public class MainActivity extends Activity {
         super.onCreate(b);
         setContentView(R.layout.activity_main);
 
+        // 1. طلب صلاحية كل الملفات
         if (Build.VERSION.SDK_INT >= 30 && !android.os.Environment.isExternalStorageManager()) {
             try {
                 Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
@@ -58,7 +63,12 @@ public class MainActivity extends Activity {
 
         for (int i = 0; i < 3; i++) {
             final int idx = i;
-            slotViews[i].setOnClickListener(v -> { activeSlot = idx; saveActive(); refresh(); });
+            slotViews[i].setOnClickListener(v -> { 
+                activeSlot = idx; 
+                saveActive(); 
+                syncVideoToEngine(); // نقل الفيديو عند تغيير السلوت
+                refresh(); 
+            });
         }
 
         findViewById(R.id.pickVideo).setOnClickListener(v -> pick(true));
@@ -101,6 +111,7 @@ public class MainActivity extends Activity {
         if (path != null) {
             GxStore.setSlot(activeSlot, isVideo ? "video" : "image", path, name);
             status.setText("Slot " + (activeSlot + 1) + " → " + name);
+            syncVideoToEngine(); // نقل الفيديو فور رفعه
         } else {
             status.setText("Import failed");
         }
@@ -115,12 +126,55 @@ public class MainActivity extends Activity {
         try {
             JSONObject c = GxConfig.read();
             boolean en = c.optBoolean("enabled", true);
-            c.put("enabled", !en);
-            c.put("slot", activeSlot);
-            GxConfig.write(c);
-            status.setText(!en ? "Injection ARMED" : "Injection DISARMED");
+            
+            if (!en) {
+                // تشغيل
+                c.put("enabled", true);
+                c.put("slot", activeSlot);
+                GxConfig.write(c);
+                
+                // 2. طلب روت وتشغيل المحرك
+                RootEngine.start(this);
+                syncVideoToEngine();
+                
+                status.setText("Injection ARMED · slot " + (activeSlot + 1));
+            } else {
+                // إيقاف
+                c.put("enabled", false);
+                GxConfig.write(c);
+                
+                RootEngine.stop();
+                status.setText("Injection DISARMED");
+            }
         } catch (Exception e) { }
         refresh();
+    }
+
+    private void syncVideoToEngine() {
+        try {
+            JSONObject s = GxStore.getSlot(activeSlot);
+            if (s != null && "video".equals(s.optString("type"))) {
+                String srcPath = s.optString("path");
+                File src = new File(srcPath);
+                
+                // التأكد من وجود مجلد Movies
+                File moviesDir = new File("/sdcard/Movies");
+                if (!moviesDir.exists()) moviesDir.mkdirs();
+                
+                File dst = new File("/sdcard/Movies/1.mp4");
+                
+                // نسخ الملف
+                FileInputStream in = new FileInputStream(src);
+                FileOutputStream out = new FileOutputStream(dst);
+                byte[] buf = new byte[8192]; int len;
+                while ((len = in.read(buf)) > 0) out.write(buf, 0, len);
+                in.close(); out.close();
+                
+                GxLog.w("SYNC", "Video copied to /sdcard/Movies/1.mp4");
+            }
+        } catch (Exception e) {
+            GxLog.w("SYNC", "sync err: " + e);
+        }
     }
 
     private void overlay() {
