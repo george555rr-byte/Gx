@@ -37,7 +37,6 @@ public class MainActivity extends Activity {
         super.onCreate(b);
         setContentView(R.layout.activity_main);
 
-        // 1. طلب صلاحية كل الملفات
         if (Build.VERSION.SDK_INT >= 30 && !android.os.Environment.isExternalStorageManager()) {
             try {
                 Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
@@ -66,7 +65,7 @@ public class MainActivity extends Activity {
             slotViews[i].setOnClickListener(v -> { 
                 activeSlot = idx; 
                 saveActive(); 
-                syncVideoToEngine(); // نقل الفيديو عند تغيير السلوت
+                syncVideoToEngine(); 
                 refresh(); 
             });
         }
@@ -111,7 +110,7 @@ public class MainActivity extends Activity {
         if (path != null) {
             GxStore.setSlot(activeSlot, isVideo ? "video" : "image", path, name);
             status.setText("Slot " + (activeSlot + 1) + " → " + name);
-            syncVideoToEngine(); // نقل الفيديو فور رفعه
+            syncVideoToEngine();
         } else {
             status.setText("Import failed");
         }
@@ -133,7 +132,7 @@ public class MainActivity extends Activity {
                 c.put("slot", activeSlot);
                 GxConfig.write(c);
                 
-                // 2. طلب روت وتشغيل المحرك
+                // طلب الروت وتشغيل المحرك
                 RootEngine.start(this);
                 syncVideoToEngine();
                 
@@ -157,13 +156,11 @@ public class MainActivity extends Activity {
                 String srcPath = s.optString("path");
                 File src = new File(srcPath);
                 
-                // التأكد من وجود مجلد Movies
                 File moviesDir = new File("/sdcard/Movies");
                 if (!moviesDir.exists()) moviesDir.mkdirs();
                 
                 File dst = new File("/sdcard/Movies/1.mp4");
                 
-                // نسخ الملف
                 FileInputStream in = new FileInputStream(src);
                 FileOutputStream out = new FileOutputStream(dst);
                 byte[] buf = new byte[8192]; int len;
